@@ -21,16 +21,12 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 
-    public void saveNewDocument(Document document){
-        documentRepository.save(document);
+    public Document saveDocument(Document document){
+        return documentRepository.save(document);
     }
 
     public Optional<Document> findDocument(Long id){
         return documentRepository.findById(id);
-    }
-
-    public void updateDocument(Document document){
-        documentRepository.save(document);
     }
 
     public void deleteDocument(Document document){

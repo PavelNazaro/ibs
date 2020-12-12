@@ -2,7 +2,6 @@ package com.pavelnazaro.ibs.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -10,7 +9,6 @@ import javax.persistence.*;
 @Table(name = "documents")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +21,8 @@ public class Document {
     @Column(name = "second_side")
     private String secondSide;
 
-    public Document(String firstSide, String secondSide) {
-        this.firstSide = firstSide;
-        this.secondSide = secondSide;
+    public Document() {
+        this.firstSide = "Not signed";
+        this.secondSide = "Not signed";
     }
 }

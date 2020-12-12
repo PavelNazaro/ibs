@@ -1,7 +1,9 @@
 package com.pavelnazaro.ibs.controllers;
 
 import com.pavelnazaro.ibs.entities.Document;
+import com.pavelnazaro.ibs.exceptions.DeleteDocumentErrorException;
 import com.pavelnazaro.ibs.exceptions.DocumentNotFoundException;
+import com.pavelnazaro.ibs.exceptions.SignedErrorException;
 import com.pavelnazaro.ibs.services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,28 +32,45 @@ public class DocumentController {
 
     @GetMapping("/save_new_document")
     @ResponseBody
-    public List<Document> saveNewDocument(){
-        documentService.saveNewDocument(new Document("Not signed", "Not signed"));
-
-        return documentService.findAll();
+    public Document saveNewDocument(){
+        return documentService.saveDocument(new Document());
     }
 
     @GetMapping("/sign_document")
     @ResponseBody
-    public List<Document> signDocument(@RequestParam(name = "id") Long id,
-                                           @RequestParam(name = "first_side", required = false) String firstSide,
-                                           @RequestParam(name = "second_side", required = false) String secondSide){
+    public Document signDocument(
+            @RequestParam(name = "id") Long id,
+            @RequestParam(name = "first_side", required = false) String firstSide,
+            @RequestParam(name = "second_side", required = false) String secondSide){
         Document document = documentService.findDocument(id).orElseThrow
                 (() -> new DocumentNotFoundException("Document not found!"));
         if (firstSide != null) {
             document.setFirstSide(firstSide);
         }
         if (secondSide != null) {
-            document.setSecondSide(secondSide);
+            if (document.getFirstSide().equals("Not signed")){
+                throw new SignedErrorException("The company in which the document was created is signed first");
+            } else {
+                document.setSecondSide(secondSide);
+            }
         }
 
-        documentService.updateDocument(document);
+        return documentService.saveDocument(document);
+    }
 
-        return documentService.findAll();
+    @GetMapping("/delete_document")
+    @ResponseBody
+    public String deleteDocument(
+            @RequestParam(name = "id") Long id,
+            @RequestParam(name = "company_name") String companyName){
+        Document document = documentService.findDocument(id).orElseThrow
+                (() -> new DocumentNotFoundException("Document not found!"));
+        if (document.getFirstSide().equals(companyName)){
+            documentService.deleteDocument(document);
+        } else {
+            throw new DeleteDocumentErrorException("Only the company that created the document can delete it");
+        }
+
+        return "Delete ok";
     }
 }
