@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class DocumentControllerTest {
     @Test
     public void saveNewDocument() {
         Long id = 1L;
-        Document mockDocument = new Document(id, "First", "Second");
+        Document mockDocument = new Document(id, "First", "Second", false, false);
 
         Mockito.doReturn(mockDocument).when(documentService).saveDocument(mockDocument);
 
@@ -50,12 +49,12 @@ public class DocumentControllerTest {
     @Test
     public void signDocument() {
         Long id = 1L;
-        Document mockDocument = new Document(id, "First", "Second");
+        Document mockDocument = new Document(id, "First", "Second", false, false);
 
         Mockito.doReturn(Optional.of(mockDocument)).when(documentService).findDocument(id);
         Mockito.doReturn(mockDocument).when(documentService).saveDocument(mockDocument);
 
-        Document document = documentController.signDocument(mockDocument.getId(), mockDocument.getFirstSide(), mockDocument.getSecondSide());
+        Document document = documentController.signDocument(mockDocument.getId(), mockDocument.getFirstCompany());
 
         Assertions.assertEquals(mockDocument, document);
     }
@@ -63,11 +62,11 @@ public class DocumentControllerTest {
     @Test
     public void deleteDocument() {
         Long id = 1L;
-        Document mockDocument = new Document(id, "First", "Second");
+        Document mockDocument = new Document(id, "First", "Second", false, false);
 
         Mockito.doReturn(Optional.of(mockDocument)).when(documentService).findDocument(id);
 
-        String str = documentController.deleteDocument(mockDocument.getId(), mockDocument.getFirstSide());
+        String str = documentController.deleteDocument(mockDocument.getId(), mockDocument.getFirstCompany());
 
         Assertions.assertEquals("Delete ok", str);
     }
