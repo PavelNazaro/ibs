@@ -1,7 +1,10 @@
 package com.pavelnazaro.ibs.exceptions;
 
-public class DeleteDocumentErrorException extends RuntimeException {
-    public DeleteDocumentErrorException(String message) {
-        super("You can't delete the document. " + message);
+import com.pavelnazaro.ibs.entities.Document;
+
+public class DeleteDocumentErrorException extends LoggerException {
+    public DeleteDocumentErrorException(String message, Document document, String company) {
+        super("Error in deleting document. " + message + ". The company that created the document: '" +
+                document.getFirstCompany() + "'. Company who wants to delete a document: '" + company + "'");
     }
 }

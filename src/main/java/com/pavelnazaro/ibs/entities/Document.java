@@ -35,4 +35,10 @@ public class Document {
         this.firstSignature = false;
         this.secondSignature = false;
     }
+
+    @Override
+    public String toString() {
+        return "[id: " + id + "; firstCompany:'" + firstCompany + "'" +
+                "; secondCompany:'" + secondCompany + "']";
+    }
 }
